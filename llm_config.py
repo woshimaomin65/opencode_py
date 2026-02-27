@@ -74,9 +74,9 @@ class LLMConfigManager:
     DEFAULT_PROVIDERS = {
         "anthropic": {
             "name": "anthropic",
-            "base_url": "https://api.anthropic.com",
-            "api_key_env": "ANTHROPIC_API_KEY",
-            "default_model": "claude-sonnet-4-20250514",
+            "base_url": "https://coding.dashscope.aliyuncs.com/apps/anthropic",
+            "api_key_env": "API_KEY",
+            "default_model": "qwen3.5-plus",
             "timeout": 600,
             "max_retries": 3,
         },
@@ -131,19 +131,27 @@ class LLMConfigManager:
         self.config = LLMConfig()
         self._loaded = False
     
-    def load(self, config_path: Optional[Path] = None) -> "LLMConfigManager":
+    def load(self, config_path: Optional[Path] = None, use_env_override: bool = False) -> "LLMConfigManager":
         """
         Load LLM configuration from local file and environment variables.
         
-        Priority:
+        Priority (when use_env_override=False, default):
+        1. Default settings (lowest)
+        2. Local config file (highest)
+        
+        Priority (when use_env_override=True):
         1. Default settings (lowest)
         2. Environment variables
         3. Local config file (highest)
+        
+        Args:
+            config_path: Path to config file (default: local_llm_config.json)
+            use_env_override: If True, environment variables override config file
         """
         # Start with defaults
         self.config.providers = dict(self.DEFAULT_PROVIDERS)
         
-        # Load from local config file if exists
+        # Load from local config file if exists (higher priority)
         config_file = config_path or self.LOCAL_CONFIG_PATH
         if config_file.exists():
             try:
@@ -153,8 +161,9 @@ class LLMConfigManager:
             except (json.JSONDecodeError, IOError) as e:
                 print(f"Warning: Failed to load local LLM config: {e}")
         
-        # Override with environment variables
-        self._apply_env_overrides()
+        # Apply environment variable overrides only if requested
+        if use_env_override:
+            self._apply_env_overrides()
         
         self._loaded = True
         return self
@@ -173,9 +182,20 @@ class LLMConfigManager:
         if "providers" in data:
             for provider_name, provider_config in data["providers"].items():
                 if provider_name in self.config.providers:
+                    # Update existing provider config
                     self.config.providers[provider_name].update(provider_config)
                 else:
                     self.config.providers[provider_name] = provider_config
+                
+                # IMPORTANT: If api_key is directly in config, use it
+                # This takes priority over api_key_env
+                if "api_key" in provider_config and provider_config["api_key"]:
+                    self.config.providers[provider_name]["api_key"] = provider_config["api_key"]
+                elif "api_key_env" in provider_config and provider_config["api_key_env"]:
+                    # Try to get from environment
+                    env_key = os.environ.get(provider_config["api_key_env"])
+                    if env_key:
+                        self.config.providers[provider_name]["api_key"] = env_key
     
     def _apply_env_overrides(self) -> None:
         """Apply environment variable overrides."""
