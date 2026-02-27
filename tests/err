@@ -1,0 +1,4 @@
+Traceback (most recent call last):
+  File "/Users/maomin/anaconda3/bin/opencode", line 3, in <module>
+    from opencode.cli.main import main
+ModuleNotFoundError: No module named 'opencode'
