@@ -15,7 +15,7 @@ from collections import deque
 
 from fastapi import APIRouter, HTTPException
 
-from opencode.bus import Bus, BusEvent
+from bus import Bus, BusEvent
 
 logger = logging.getLogger(__name__)
 
@@ -270,7 +270,7 @@ async def select_session(body: Dict[str, str]):
     Navigate the TUI to display the specified session.
     """
     try:
-        from opencode.session import get_session
+        from session import get_session
         
         session_id = body.get("session_id")
         if not session_id:

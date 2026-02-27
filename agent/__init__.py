@@ -8,7 +8,7 @@ Provides AI agent functionality:
 - Permission handling
 """
 
-from opencode.agent.agent import (
+from agent.agent import (
     # Enums
     AgentMode,
     # Models

@@ -1,6 +1,6 @@
 """Tool module for OpenCode."""
 
-from opencode.tool.tool import (
+from tool.tool import (
     BaseTool,
     ToolDefinition,
     ToolParameter,
@@ -11,19 +11,19 @@ from opencode.tool.tool import (
     init_default_tools,
 )
 
-from opencode.tool.read import ReadTool, ReadToolConfig
-from opencode.tool.write import WriteTool, WriteToolConfig
-from opencode.tool.edit import EditTool, EditToolConfig
-from opencode.tool.bash import BashTool, BashToolConfig
-from opencode.tool.search import SearchTool, SearchToolConfig
-from opencode.tool.web import (
+from tool.read import ReadTool, ReadToolConfig
+from tool.write import WriteTool, WriteToolConfig
+from tool.edit import EditTool, EditToolConfig
+from tool.bash import BashTool, BashToolConfig
+from tool.search import SearchTool, SearchToolConfig
+from tool.web import (
     WebSearchTool,
     WebFetchTool,
     WebSearchToolConfig,
     WebFetchToolConfig,
 )
-from opencode.tool.lsp import LspTool, LspToolConfig, LSPDiagnostic
-from opencode.tool.exit import (
+from tool.lsp import LspTool, LspToolConfig, LSPDiagnostic
+from tool.exit import (
     ExitTool,
     ExitToolConfig,
     ExitStatus,

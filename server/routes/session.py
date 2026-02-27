@@ -15,7 +15,7 @@ from fastapi import APIRouter, HTTPException, Query, Path
 from fastapi.responses import JSONResponse, StreamingResponse
 import json
 
-from opencode.session import (
+from session import (
     SessionManager,
     SessionInfo,
     MessageWithParts,
@@ -27,12 +27,12 @@ from opencode.session import (
     get_manager,
     SessionPrompt,
 )
-from opencode.session.message_v2 import MessageV2Error
-from opencode.session.prompt import SessionBusyError
-from opencode.agent import get_default_agent
-from opencode.provider import get_provider
-from opencode.permission import get_permission_manager, PermissionLevel
-from opencode.snapshot import FileDiff
+from session.message_v2 import MessageV2Error
+from session.prompt import SessionBusyError
+from agent import get_default_agent
+from provider import get_provider
+from permission import get_permission_manager, PermissionLevel
+from snapshot import FileDiff
 
 logger = logging.getLogger(__name__)
 
@@ -412,7 +412,7 @@ async def get_message(
     Retrieve a specific message from a session by its message ID.
     """
     try:
-        from opencode.session.message_v2 import get_message as get_message_v2
+        from session.message_v2 import get_message as get_message_v2
         message = await get_message_v2(session_id, message_id)
         return message
     except Exception as e:
@@ -633,7 +633,7 @@ async def respond_to_permission(
     """
     try:
         body = body or {}
-        from opencode.permission import PermissionNext
+        from permission import PermissionNext
         await PermissionNext.reply(
             request_id=permission_id,
             reply=body.get("response"),

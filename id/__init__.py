@@ -1,6 +1,6 @@
 """ID module for OpenCode."""
 
-from opencode.id.id import (
+from id.id import (
     generate_id,
     generate_short_id,
     generate_deterministic_id,

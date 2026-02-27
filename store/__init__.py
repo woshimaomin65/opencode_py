@@ -8,7 +8,7 @@ Provides storage management functionality:
 - JSON to SQLite migration utilities
 """
 
-from opencode.store.storage import (
+from store.storage import (
     Storage,
     StorageNotFoundError,
     read,
@@ -19,7 +19,7 @@ from opencode.store.storage import (
     initialize_storage,
 )
 
-from opencode.store.db import (
+from store.db import (
     Database,
     DatabaseNotFoundError,
     get_database,
@@ -28,12 +28,12 @@ from opencode.store.db import (
     effect,
 )
 
-from opencode.store.schema import (
+from store.schema import (
     Base,
     TimestampMixin,
 )
 
-from opencode.store.migration import (
+from store.migration import (
     JsonMigration,
     MigrationProgress,
     run_json_migration,

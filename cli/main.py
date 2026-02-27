@@ -16,10 +16,10 @@ from rich.panel import Panel
 from rich.live import Live
 from rich.spinner import Spinner
 
-from opencode.config.config import Config
-from opencode.tool.tool import init_default_tools, ToolRegistry
-from opencode.agent.agent import Agent
-from opencode.session.session import SessionManager
+from config.config import Config
+from tool.tool import init_default_tools, ToolRegistry
+from agent.agent import Agent
+from session.session import SessionManager
 
 
 console = Console()

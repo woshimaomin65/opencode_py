@@ -18,8 +18,8 @@ from contextlib import asynccontextmanager, contextmanager
 
 from filelock import AsyncFileLock, FileLock
 
-from opencode.store.db import Database
-from opencode.store.migration import run_json_migration
+from store.db import Database
+from store.migration import run_json_migration
 
 logger = logging.getLogger(__name__)
 
@@ -124,7 +124,7 @@ class Storage:
     @classmethod
     def _get_storage_dir(cls) -> str:
         """Get the storage directory path."""
-        from opencode.global_path import get_data_path
+        from global_path import get_data_path
         return os.path.join(get_data_path(), "storage")
     
     @classmethod

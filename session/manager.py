@@ -18,7 +18,7 @@ from decimal import Decimal
 from sqlalchemy import create_engine, select, update, delete, and_, or_, desc, func
 from sqlalchemy.orm import sessionmaker, Session as DBSession
 
-from opencode.session.models import (
+from session.models import (
     Base,
     SessionModel,
     MessageModel,
@@ -45,9 +45,9 @@ from opencode.session.models import (
     PatchPart,
     AgentPart,
 )
-from opencode.id.id import generate_id, generate_session_id, generate_message_id, generate_part_id
-from opencode.util.util import slugify
-from opencode.bus import Bus, BusEvent
+from id.id import generate_id, generate_session_id, generate_message_id, generate_part_id
+from util.util import slugify
+from bus import Bus, BusEvent
 
 
 # Bus events

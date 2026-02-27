@@ -11,7 +11,7 @@ from typing import Any, Dict, Optional
 
 from fastapi import APIRouter, HTTPException, Path
 
-from opencode.permission import PermissionManager, get_permission_manager, PermissionLevel
+from permission import PermissionManager, get_permission_manager, PermissionLevel
 
 logger = logging.getLogger(__name__)
 

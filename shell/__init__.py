@@ -1,6 +1,6 @@
 """Shell module for OpenCode."""
 
-from opencode.shell.shell import (
+from shell.shell import (
     ProcessStatus,
     ProcessResult,
     ProcessInfo,

@@ -16,7 +16,7 @@ from typing import Optional, Any, Generator
 from dataclasses import dataclass
 from difflib import unified_diff
 
-from opencode.tool.tool import BaseTool, ToolDefinition, ToolParameter, ToolResult, ToolStatus, ToolContext
+from tool.tool import BaseTool, ToolDefinition, ToolParameter, ToolResult, ToolStatus, ToolContext
 
 
 @dataclass

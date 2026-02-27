@@ -11,7 +11,7 @@ from typing import Dict, Any, List
 
 from fastapi import APIRouter, HTTPException
 
-from opencode.config import Config, get_config
+from config import Config, get_config
 
 logger = logging.getLogger(__name__)
 
@@ -59,7 +59,7 @@ async def list_config_providers():
     Get a list of all configured AI providers and their default models.
     """
     try:
-        from opencode.provider import ProviderRegistry, get_provider
+        from provider import ProviderRegistry, get_provider
         
         providers_dict = await ProviderRegistry.list_providers()
         

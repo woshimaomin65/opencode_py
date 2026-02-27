@@ -1,6 +1,6 @@
 """Permission module for OpenCode."""
 
-from opencode.permission.permission import (
+from permission.permission import (
     PermissionManager,
     PermissionLevel,
     PermissionRule,

@@ -1,6 +1,6 @@
 """Utility module for OpenCode."""
 
-from opencode.util.util import (
+from util.util import (
     md5_hash,
     sha256_hash,
     retry_async,

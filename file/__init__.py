@@ -1,6 +1,6 @@
 """File module for OpenCode."""
 
-from opencode.file.file import (
+from file.file import (
     FileInfo,
     FileWatchEvent,
     read_file,

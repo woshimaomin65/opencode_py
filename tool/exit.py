@@ -12,7 +12,7 @@ from typing import Optional, Any
 from dataclasses import dataclass
 from enum import Enum
 
-from opencode.tool.tool import BaseTool, ToolDefinition, ToolParameter, ToolResult, ToolStatus, ToolContext
+from tool.tool import BaseTool, ToolDefinition, ToolParameter, ToolResult, ToolStatus, ToolContext
 
 
 class ExitStatus(str, Enum):

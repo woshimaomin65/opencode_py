@@ -13,15 +13,15 @@ from typing import Optional, List
 
 from fastapi import APIRouter, HTTPException, Query
 
-from opencode.file import (
+from file import (
     list_directory,
     read_file,
     get_file_info,
     FileInfo,
 )
-from opencode.file.ripgrep import search as ripgrep_search, Match
-from opencode.lsp import workspace_symbol, Symbol
-from opencode.project import get_project_manager
+from file.ripgrep import search as ripgrep_search, Match
+from lsp import workspace_symbol, Symbol
+from project import get_project_manager
 
 logger = logging.getLogger(__name__)
 
@@ -68,7 +68,7 @@ async def find_files(
     Search for files or directories by name or pattern in the project directory.
     """
     try:
-        from opencode.file import search_files
+        from file import search_files
         
         include_dirs = dirs != "false"
         results = await search_files(

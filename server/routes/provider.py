@@ -12,10 +12,10 @@ from typing import Dict, Any, List, Optional, Set
 
 from fastapi import APIRouter, HTTPException, Path
 
-from opencode.config import get_config
-from opencode.provider import ProviderRegistry, get_provider
-from opencode.provider.models import ModelsDev
-from opencode.provider.auth import ProviderAuth
+from config import get_config
+from provider import ProviderRegistry, get_provider
+from provider.models import ModelsDev
+from provider.auth import ProviderAuth
 
 logger = logging.getLogger(__name__)
 

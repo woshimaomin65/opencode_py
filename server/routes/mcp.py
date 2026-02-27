@@ -13,8 +13,8 @@ from typing import Any, Dict, Optional
 from fastapi import APIRouter, HTTPException, Path
 from pydantic import BaseModel
 
-from opencode.mcp import MCPManager, MCPServerConfig, get_mcp_manager
-from opencode.config import Config
+from mcp import MCPManager, MCPServerConfig, get_mcp_manager
+from config import Config
 
 logger = logging.getLogger(__name__)
 

@@ -14,8 +14,8 @@ from pathlib import Path
 from typing import Any, Optional, AsyncIterator
 from dataclasses import dataclass
 
-from opencode.session.manager import SessionManager, Database, NotFoundError
-from opencode.session.message_v2 import (
+from session.manager import SessionManager, Database, NotFoundError
+from session.message_v2 import (
     MessageWithParts,
     UserMessage,
     AssistantMessage,
@@ -25,12 +25,12 @@ from opencode.session.message_v2 import (
     SubtaskPart,
     filter_compacted,
 )
-from opencode.id.id import generate_id, generate_message_id, generate_part_id
-from opencode.bus import Bus
-from opencode.agent.agent import Agent, get_agent
-from opencode.provider.provider import get_provider
-from opencode.tool.tool import ToolRegistry, ToolContext
-from opencode.util.util import defer
+from id.id import generate_id, generate_message_id, generate_part_id
+from bus import Bus
+from agent.agent import Agent, get_agent
+from provider.provider import get_provider
+from tool.tool import ToolRegistry, ToolContext
+from util.util import defer
 
 
 # Structured output prompts

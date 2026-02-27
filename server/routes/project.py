@@ -12,7 +12,7 @@ from typing import Any, Dict, Optional
 
 from fastapi import APIRouter, HTTPException, Path
 
-from opencode.project import ProjectManager, ProjectInfo, get_project_manager
+from project import ProjectManager, ProjectInfo, get_project_manager
 
 logger = logging.getLogger(__name__)
 

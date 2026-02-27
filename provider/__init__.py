@@ -1,6 +1,6 @@
 """Provider module for OpenCode."""
 
-from opencode.provider.provider import (
+from provider.provider import (
     BaseProvider,
     ProviderType,
     ProviderRegistry,

@@ -14,7 +14,7 @@ from typing import Optional, Any, Literal
 from dataclasses import dataclass
 from enum import Enum
 
-from opencode.tool.tool import BaseTool, ToolDefinition, ToolParameter, ToolResult, ToolStatus, ToolContext
+from tool.tool import BaseTool, ToolDefinition, ToolParameter, ToolResult, ToolStatus, ToolContext
 
 
 # Configuration constants

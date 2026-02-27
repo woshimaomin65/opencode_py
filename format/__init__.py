@@ -1,6 +1,6 @@
 """Format module for OpenCode."""
 
-from opencode.format.format import (
+from format.format import (
     format_duration,
     format_bytes,
     format_datetime,

@@ -24,15 +24,15 @@ from typing import Optional
 # Add parent directory to path for imports
 sys.path.insert(0, str(Path(__file__).parent.parent.parent))
 
-from opencode.tool.tool import ToolContext, ToolStatus, ToolRegistry
-from opencode.tool.read import ReadTool, ReadToolConfig
-from opencode.tool.write import WriteTool, WriteToolConfig
-from opencode.tool.edit import EditTool, EditToolConfig
-from opencode.tool.bash import BashTool, BashToolConfig
-from opencode.tool.search import SearchTool, SearchToolConfig
-from opencode.tool.web import WebSearchTool, WebFetchTool
-from opencode.tool.lsp import LspTool
-from opencode.tool.exit import ExitTool, PlanEnterTool, PlanExitTool
+from tool.tool import ToolContext, ToolStatus, ToolRegistry
+from tool.read import ReadTool, ReadToolConfig
+from tool.write import WriteTool, WriteToolConfig
+from tool.edit import EditTool, EditToolConfig
+from tool.bash import BashTool, BashToolConfig
+from tool.search import SearchTool, SearchToolConfig
+from tool.web import WebSearchTool, WebFetchTool
+from tool.lsp import LspTool
+from tool.exit import ExitTool, PlanEnterTool, PlanExitTool
 
 
 class MockToolContext(ToolContext):
@@ -423,7 +423,7 @@ class TestLspTool(unittest.IsolatedAsyncioTestCase):
         self.temp_dir = tempfile.TemporaryDirectory()
         self.temp_path = Path(self.temp_dir.name)
         self.ctx = MockToolContext(self.temp_path)
-        from opencode.tool.lsp import LspToolConfig
+        from tool.lsp import LspToolConfig
         self.tool = LspTool(LspToolConfig(working_dir=self.temp_path))
         
         # Create test file

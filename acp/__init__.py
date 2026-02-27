@@ -1,6 +1,6 @@
 """ACP module for OpenCode."""
 
-from opencode.acp.acp import (
+from acp.acp import (
     MessageType,
     AgentStatus,
     ACPMessage,

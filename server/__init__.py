@@ -4,7 +4,7 @@ Server module for OpenCode.
 Provides FastAPI server implementation with all route modules.
 """
 
-from opencode.server.routes import (
+from server.routes import (
     session_router,
     mcp_router,
     file_router,

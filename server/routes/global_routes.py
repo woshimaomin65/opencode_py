@@ -16,11 +16,11 @@ from typing import Any, Dict
 from fastapi import APIRouter, HTTPException
 from fastapi.responses import StreamingResponse
 
-from opencode.global_path import get_data_path
-from opencode.bus import Bus, BusEvent
-from opencode.installation import VERSION
-from opencode.config import Config, get_config, update_global_config
-from opencode.project import get_project_manager
+from global_path import get_data_path
+from bus import Bus, BusEvent
+from installation import VERSION
+from config import Config, get_config, update_global_config
+from project import get_project_manager
 
 logger = logging.getLogger(__name__)
 

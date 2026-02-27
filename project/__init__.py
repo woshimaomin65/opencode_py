@@ -1,6 +1,6 @@
 """Project module for OpenCode."""
 
-from opencode.project.project import (
+from project.project import (
     VCSType,
     VCSInfo,
     ProjectInfo,

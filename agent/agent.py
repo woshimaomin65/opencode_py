@@ -17,21 +17,21 @@ from dataclasses import dataclass, field
 from enum import Enum
 from pydantic import BaseModel
 
-from opencode.provider.provider import (
+from provider.provider import (
     BaseProvider,
     ProviderRegistry,
     Message as ProviderMessage,
     ToolCall,
     get_provider,
 )
-from opencode.tool.tool import (
+from tool.tool import (
     ToolRegistry,
     ToolResult,
     ToolStatus,
     ToolDefinition,
 )
-from opencode.session.session import Session
-from opencode.permission.permission import PermissionRule
+from session.session import Session
+from permission.permission import PermissionRule
 
 
 class AgentMode(str, Enum):

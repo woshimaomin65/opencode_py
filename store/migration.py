@@ -22,7 +22,7 @@ from dataclasses import dataclass
 
 from sqlalchemy import text
 
-from opencode.store.db import Database
+from store.db import Database
 
 logger = logging.getLogger(__name__)
 
@@ -145,7 +145,7 @@ class JsonMigration:
         Returns:
             Migration statistics
         """
-        from opencode.global_path import get_data_path
+        from global_path import get_data_path
         storage_dir = os.path.join(get_data_path(), "storage")
         
         stats = MigrationStats()

@@ -287,7 +287,7 @@ class ACPServer:
         Returns:
             Response result
         """
-        from opencode.id import generate_id
+        from id import generate_id
         
         message = ACPMessage(
             id=generate_id("req"),
@@ -323,7 +323,7 @@ class ACPServer:
             method: Method name
             params: Method parameters
         """
-        from opencode.id import generate_id
+        from id import generate_id
         
         message = ACPMessage(
             id=generate_id("notif"),
@@ -391,7 +391,7 @@ class ACPClient:
         Returns:
             Response result
         """
-        from opencode.id import generate_id
+        from id import generate_id
         
         message = ACPMessage(
             id=generate_id("req"),

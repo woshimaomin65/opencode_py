@@ -10,7 +10,7 @@ Provides session management functionality:
 
 from typing import Optional
 
-from opencode.session.models import (
+from session.models import (
     # Database models
     Base,
     SessionModel,
@@ -40,7 +40,7 @@ from opencode.session.models import (
     AgentPart,
 )
 
-from opencode.session.manager import (
+from session.manager import (
     # Classes
     SessionManager,
     Database,
@@ -64,7 +64,7 @@ def calculate_usage(model: dict, usage: dict, metadata: Optional[dict] = None) -
     """Calculate token usage and cost."""
     return SessionManager.calculate_usage(model, usage, metadata)
 
-from opencode.session.message_v2 import (
+from session.message_v2 import (
     # Error types
     MessageV2Error,
     OutputLengthError,
@@ -107,7 +107,7 @@ from opencode.session.message_v2 import (
     from_error,
 )
 
-from opencode.session.prompt import (
+from session.prompt import (
     # Classes
     SessionPrompt,
     PromptInput,

@@ -222,11 +222,11 @@ class ToolRegistry:
 # Initialize default tools
 def init_default_tools(working_dir: Optional[Path] = None) -> None:
     """Initialize default tools."""
-    from opencode.tool.read import ReadTool
-    from opencode.tool.write import WriteTool
-    from opencode.tool.edit import EditTool
-    from opencode.tool.bash import BashTool
-    from opencode.tool.search import SearchTool
+    from tool.read import ReadTool
+    from tool.write import WriteTool
+    from tool.edit import EditTool
+    from tool.bash import BashTool
+    from tool.search import SearchTool
     
     ToolRegistry.register(ReadTool())
     ToolRegistry.register(WriteTool())

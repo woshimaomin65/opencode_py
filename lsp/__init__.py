@@ -1,6 +1,6 @@
 """LSP module for OpenCode."""
 
-from opencode.lsp.lsp import (
+from lsp.lsp import (
     MessageType,
     SymbolKind,
     DiagnosticSeverity,

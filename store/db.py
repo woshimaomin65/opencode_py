@@ -19,7 +19,7 @@ from sqlalchemy import create_engine, text
 from sqlalchemy.orm import sessionmaker, Session as DBSession, scoped_session
 from sqlalchemy.engine import Engine
 
-from opencode.store.schema import Base
+from store.schema import Base
 
 logger = logging.getLogger(__name__)
 
@@ -63,7 +63,7 @@ class Database:
             db_path: Path to the SQLite database file. If None, uses default location.
         """
         if db_path is None:
-            from opencode.global_path import get_data_path
+            from global_path import get_data_path
             db_path = os.path.join(get_data_path(), "opencode.db")
         
         cls._path = db_path
@@ -110,7 +110,7 @@ class Database:
     def get_path(cls) -> str:
         """Get the database path."""
         if cls._path is None:
-            from opencode.global_path import get_data_path
+            from global_path import get_data_path
             cls._path = os.path.join(get_data_path(), "opencode.db")
         return cls._path
     

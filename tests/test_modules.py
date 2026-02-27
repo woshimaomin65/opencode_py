@@ -24,14 +24,14 @@ def test_imports():
         return False
     
     try:
-        from opencode.config import Config, ConfigData
+        from config import Config, ConfigData
         print("  ✓ Config module")
     except ImportError as e:
         print(f"  ✗ Config module failed: {e}")
         return False
     
     try:
-        from opencode.provider import (
+        from provider import (
             BaseProvider,
             ProviderType,
             AnthropicProvider,
@@ -46,7 +46,7 @@ def test_imports():
         return False
     
     try:
-        from opencode.tool import (
+        from tool import (
             BaseTool,
             ToolDefinition,
             ToolRegistry,
@@ -62,35 +62,35 @@ def test_imports():
         return False
     
     try:
-        from opencode.session import Session, SessionManager, Message, TokenUsage
+        from session import Session, SessionManager, Message, TokenUsage
         print("  ✓ Session module")
     except ImportError as e:
         print(f"  ✗ Session module failed: {e}")
         return False
     
     try:
-        from opencode.agent import Agent, AgentConfig
+        from agent import Agent, AgentConfig
         print("  ✓ Agent module")
     except ImportError as e:
         print(f"  ✗ Agent module failed: {e}")
         return False
     
     try:
-        from opencode.permission import PermissionManager, PermissionLevel
+        from permission import PermissionManager, PermissionLevel
         print("  ✓ Permission module")
     except ImportError as e:
         print(f"  ✗ Permission module failed: {e}")
         return False
     
     try:
-        from opencode.mcp import MCPServer, MCPManager, MCPServerConfig
+        from mcp import MCPServer, MCPManager, MCPServerConfig
         print("  ✓ MCP module")
     except ImportError as e:
         print(f"  ✗ MCP module failed: {e}")
         return False
     
     try:
-        from opencode.util import (
+        from util import (
             md5_hash,
             normalize_path,
             truncate_text,
@@ -109,7 +109,7 @@ def test_config():
     """Test configuration module."""
     print("Testing Config module...")
     
-    from opencode.config import Config
+    from config import Config
     
     # Create config with temp directory
     import tempfile
@@ -143,8 +143,8 @@ def test_tool_definitions():
     """Test tool definitions."""
     print("Testing Tool definitions...")
     
-    from opencode.tool import ReadTool, WriteTool, EditTool, ShellTool, SearchTool
-    from opencode.tool import ToolRegistry, init_default_tools
+    from tool import ReadTool, WriteTool, EditTool, ShellTool, SearchTool
+    from tool import ToolRegistry, init_default_tools
     
     # Initialize default tools
     init_default_tools()
@@ -192,7 +192,7 @@ async def test_tool_execution():
     """Test tool execution."""
     print("Testing Tool execution...")
     
-    from opencode.tool import (
+    from tool import (
         ReadTool, WriteTool, EditTool, ShellTool, SearchTool,
         ToolRegistry, init_default_tools, ToolStatus,
     )
@@ -256,7 +256,7 @@ def test_session():
     """Test session module."""
     print("Testing Session module...")
     
-    from opencode.session import Session, SessionManager, TokenUsage
+    from session import Session, SessionManager, TokenUsage
     import tempfile
     
     with tempfile.TemporaryDirectory() as tmpdir:
@@ -317,7 +317,7 @@ def test_permission():
     """Test permission module."""
     print("Testing Permission module...")
     
-    from opencode.permission import PermissionManager, PermissionLevel
+    from permission import PermissionManager, PermissionLevel
     import tempfile
     
     with tempfile.TemporaryDirectory() as tmpdir:
@@ -358,7 +358,7 @@ def test_util():
     """Test utility functions."""
     print("Testing Util module...")
     
-    from opencode.util import (
+    from util import (
         md5_hash,
         sha256_hash,
         truncate_text,
@@ -402,7 +402,7 @@ def test_provider_types():
     """Test provider type definitions."""
     print("Testing Provider types...")
     
-    from opencode.provider import ProviderType, ProviderRegistry, Message, Response
+    from provider import ProviderType, ProviderRegistry, Message, Response
     
     # Test provider types
     assert ProviderType.ANTHROPIC.value == "anthropic"
@@ -423,7 +423,7 @@ def test_provider_types():
     print("  ✓ Response creation")
     
     # Test provider registry
-    from opencode.provider import AnthropicProvider, OpenAIProvider, GoogleProvider
+    from provider import AnthropicProvider, OpenAIProvider, GoogleProvider
     assert ProviderRegistry.get("anthropic") == AnthropicProvider
     assert ProviderRegistry.get("openai") == OpenAIProvider
     assert ProviderRegistry.get("google") == GoogleProvider

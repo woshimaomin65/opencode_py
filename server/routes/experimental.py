@@ -12,9 +12,9 @@ from typing import Any, Dict, List, Optional
 
 from fastapi import APIRouter, HTTPException, Query
 
-from opencode.tool.registry import ToolRegistry
-from opencode.project import get_project_manager
-from opencode.mcp import get_mcp_manager
+from tool.registry import ToolRegistry
+from project import get_project_manager
+from mcp import get_mcp_manager
 
 logger = logging.getLogger(__name__)
 

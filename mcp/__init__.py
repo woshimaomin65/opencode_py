@@ -1,6 +1,6 @@
 """MCP module for OpenCode."""
 
-from opencode.mcp.mcp import (
+from mcp.mcp import (
     MCPServer,
     MCPManager,
     MCPServerConfig,
