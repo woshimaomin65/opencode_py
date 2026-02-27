@@ -8,6 +8,11 @@ Handles AI provider integration including:
 - AWS Bedrock
 - Groq
 - And other providers via OpenAI-compatible API
+
+Configuration is loaded from llm_config.py which supports:
+- Default settings
+- Environment variables
+- Local config file (local_llm_config.json)
 """
 
 import json
@@ -16,6 +21,9 @@ from abc import ABC, abstractmethod
 from typing import Any, Optional, AsyncIterator
 from dataclasses import dataclass
 from enum import Enum
+
+# Import LLM configuration
+from llm_config import get_llm_config, LLMConfigManager
 
 
 class ProviderType(Enum):
@@ -71,17 +79,55 @@ class Response:
 class BaseProvider(ABC):
     """Abstract base class for all providers."""
     
+    _llm_config: Optional[LLMConfigManager] = None
+    
     def __init__(
         self,
-        model: str,
+        model: Optional[str] = None,
         api_key: Optional[str] = None,
         base_url: Optional[str] = None,
         options: Optional[dict] = None,
+        provider_name: str = "anthropic",
     ):
-        self.model = model
-        self.api_key = api_key or self._get_default_api_key()
-        self.base_url = base_url
-        self.options = options or {}
+        self.provider_name = provider_name
+        self._init_llm_config()
+        
+        # Use config values if not provided
+        self.model = model or self._get_config_model(provider_name)
+        self.api_key = api_key or self._get_config_api_key(provider_name)
+        self.base_url = base_url or self._get_config_base_url(provider_name)
+        self.options = options or self._get_config_options(provider_name)
+    
+    def _init_llm_config(self) -> None:
+        """Initialize LLM config if not already done."""
+        if BaseProvider._llm_config is None:
+            BaseProvider._llm_config = get_llm_config()
+    
+    def _get_config_model(self, provider_name: str) -> Optional[str]:
+        """Get model from LLM config."""
+        if self._llm_config:
+            return self._llm_config.get_model(provider_name)
+        return None
+    
+    def _get_config_api_key(self, provider_name: str) -> Optional[str]:
+        """Get API key from LLM config."""
+        if self._llm_config:
+            return self._llm_config.get_api_key(provider_name)
+        return None
+    
+    def _get_config_base_url(self, provider_name: str) -> Optional[str]:
+        """Get base URL from LLM config."""
+        if self._llm_config:
+            return self._llm_config.get_base_url(provider_name)
+        return None
+    
+    def _get_config_options(self, provider_name: str) -> dict:
+        """Get options from LLM config."""
+        if self._llm_config:
+            provider = self._llm_config.get_provider(provider_name)
+            if provider:
+                return provider.get("options", {})
+        return {}
     
     @abstractmethod
     def _get_default_api_key(self) -> Optional[str]:
@@ -474,12 +520,49 @@ class ProviderRegistry:
 # Convenience function
 def get_provider(
     provider_type: str,
-    model: str,
+    model: Optional[str] = None,
     api_key: Optional[str] = None,
     base_url: Optional[str] = None,
     options: Optional[dict] = None,
 ) -> BaseProvider:
-    """Get a provider instance."""
+    """
+    Get a provider instance with configuration from llm_config.
+    
+    Configuration priority:
+    1. Explicit arguments (highest)
+    2. LLM config (local_llm_config.json)
+    3. Environment variables
+    4. Default values (lowest)
+    
+    Args:
+        provider_type: Provider type (anthropic, openai, google, etc.)
+        model: Model name (optional, uses config default if not provided)
+        api_key: API key (optional, uses config/env if not provided)
+        base_url: Base URL (optional, uses config if not provided)
+        options: Additional options (optional, merges with config)
+    
+    Returns:
+        Provider instance configured with the specified settings
+    """
+    # Get LLM config for defaults
+    llm_config = get_llm_config()
+    
+    # Use config values if not explicitly provided
+    if model is None:
+        model = llm_config.get_model(provider_type)
+    
+    if api_key is None:
+        api_key = llm_config.get_api_key(provider_type)
+    
+    if base_url is None:
+        base_url = llm_config.get_base_url(provider_type)
+    
+    # Merge options with config options
+    config_options = llm_config.get_provider(provider_type)
+    if config_options and "options" in config_options:
+        merged_options = {**config_options["options"], **(options or {})}
+        options = merged_options if options else config_options["options"]
+    
     return ProviderRegistry.create(
         provider_type=provider_type,
         model=model,
@@ -487,3 +570,26 @@ def get_provider(
         base_url=base_url,
         options=options,
     )
+
+
+def get_default_provider() -> BaseProvider:
+    """
+    Get the default provider from llm_config.
+    
+    Returns:
+        Default provider instance
+    """
+    llm_config = get_llm_config()
+    default_type = llm_config.get_default_provider()
+    return get_provider(default_type)
+
+
+def list_available_providers() -> list[str]:
+    """
+    List all available providers from llm_config.
+    
+    Returns:
+        List of provider names
+    """
+    llm_config = get_llm_config()
+    return list(llm_config.config.providers.keys())

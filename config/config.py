@@ -7,6 +7,7 @@ Handles loading and merging configuration from multiple sources:
 - Project configuration (.opencode.json)
 - Directory-specific configurations
 - Managed configuration
+- LLM configuration (llm_config.py)
 """
 
 import json
@@ -15,6 +16,9 @@ from pathlib import Path
 from typing import Any, Optional
 from dataclasses import dataclass, field, asdict
 from pydantic import BaseModel, Field
+
+# Import LLM configuration
+from llm_config import get_llm_config, LLMConfigManager
 
 
 @dataclass
@@ -76,6 +80,7 @@ class Config:
     3. Project configuration (.opencode.json in project root)
     4. Directory configurations (.opencode/ directories)
     5. Managed configuration (highest priority)
+    6. LLM configuration (from llm_config.py)
     """
     
     GLOBAL_CONFIG_PATH = Path.home() / ".opencode.json"
@@ -86,9 +91,13 @@ class Config:
         self.project_root = project_root or Path.cwd()
         self._config_data: ConfigData = ConfigData()
         self._loaded_paths: list[Path] = []
+        self._llm_config: Optional[LLMConfigManager] = None
         
     def load(self) -> "Config":
         """Load configuration from all sources."""
+        # Load LLM configuration first
+        self._load_llm_config()
+        
         # Load in order of priority (lowest to highest)
         self._load_remote_config()
         self._load_global_config()
@@ -97,6 +106,25 @@ class Config:
         self._load_managed_config()
         
         return self
+    
+    def _load_llm_config(self) -> None:
+        """Load LLM configuration from llm_config.py."""
+        try:
+            self._llm_config = get_llm_config()
+            # Merge LLM providers into config
+            for provider_name, provider_config in self._llm_config.config.providers.items():
+                if provider_name not in self._config_data.providers:
+                    self._config_data.providers[provider_name] = {
+                        "name": provider_name,
+                        "model": provider_config.get("default_model"),
+                        "base_url": provider_config.get("base_url"),
+                    }
+                    # Add API key if available (will be redacted in output)
+                    api_key = self._llm_config.get_api_key(provider_name)
+                    if api_key:
+                        self._config_data.providers[provider_name]["api_key"] = api_key
+        except Exception as e:
+            print(f"Warning: Failed to load LLM config: {e}")
     
     def _load_remote_config(self) -> None:
         """Load remote configuration (if configured)."""
@@ -243,6 +271,41 @@ class Config:
     def acp_config(self) -> dict:
         """Get ACP configuration."""
         return self._config_data.acp
+    
+    @property
+    def llm_config(self) -> Optional[LLMConfigManager]:
+        """Get LLM configuration manager."""
+        return self._llm_config
+    
+    def get_llm_api_key(self, provider: str) -> Optional[str]:
+        """Get API key for an LLM provider."""
+        if self._llm_config:
+            return self._llm_config.get_api_key(provider)
+        return None
+    
+    def get_llm_base_url(self, provider: str) -> Optional[str]:
+        """Get base URL for an LLM provider."""
+        if self._llm_config:
+            return self._llm_config.get_base_url(provider)
+        return None
+    
+    def get_llm_model(self, provider: str) -> Optional[str]:
+        """Get default model for an LLM provider."""
+        if self._llm_config:
+            return self._llm_config.get_model(provider)
+        return None
+    
+    def get_default_llm_provider(self) -> str:
+        """Get default LLM provider."""
+        if self._llm_config:
+            return self._llm_config.get_default_provider()
+        return "anthropic"
+    
+    def get_default_llm_model(self) -> str:
+        """Get default LLM model."""
+        if self._llm_config:
+            return self._llm_config.get_default_model()
+        return "claude-sonnet-4-20250514"
     
     def to_dict(self) -> dict:
         """Convert configuration to dictionary."""

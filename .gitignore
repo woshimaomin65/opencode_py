@@ -80,6 +80,13 @@ dmypy.json
 *.sqlite
 sessions/
 
+# Local configuration files (DO NOT COMMIT)
+local_llm_config.json
+.local_*.json
+*.local.json
+.env.local
+.env.*.local
+
 # OS
 .DS_Store
 Thumbs.db
