@@ -75,7 +75,7 @@ class LLMConfigManager:
         "anthropic": {
             "name": "anthropic",
             "base_url": "https://coding.dashscope.aliyuncs.com/apps/anthropic",
-            "api_key_env": "API_KEY",
+            "api_key_env": "ANTHROPIC_AUTH_TOKEN",
             "default_model": "qwen3.5-plus",
             "timeout": 600,
             "max_retries": 3,
@@ -125,7 +125,7 @@ class LLMConfigManager:
         },
     }
     
-    LOCAL_CONFIG_PATH = Path(__file__).parent / "local_llm_config.json"
+    LOCAL_CONFIG_PATH = Path(__file__).parent.parent / "local_llm_config.json"
     
     def __init__(self):
         self.config = LLMConfig()
@@ -170,6 +170,9 @@ class LLMConfigManager:
     
     def _merge_config(self, data: dict) -> None:
         """Merge configuration from local config file."""
+        # Store global api_key for fallback
+        global_api_key = data.get("api_key")
+        
         # Merge default provider
         if "default_provider" in data:
             self.config.default_provider = data["default_provider"]
@@ -196,6 +199,12 @@ class LLMConfigManager:
                     env_key = os.environ.get(provider_config["api_key_env"])
                     if env_key:
                         self.config.providers[provider_name]["api_key"] = env_key
+                    elif global_api_key:
+                        # Fallback to global api_key if env var not set
+                        self.config.providers[provider_name]["api_key"] = global_api_key
+                elif global_api_key:
+                    # Use global api_key if provider doesn't have api_key or api_key_env
+                    self.config.providers[provider_name]["api_key"] = global_api_key
     
     def _apply_env_overrides(self) -> None:
         """Apply environment variable overrides."""
@@ -231,16 +240,8 @@ class LLMConfigManager:
         if not provider:
             return None
         
-        # Check if API key is already set
-        if provider.get("api_key"):
-            return provider["api_key"]
-        
-        # Try to get from environment
-        api_key_env = provider.get("api_key_env")
-        if api_key_env:
-            return os.environ.get(api_key_env)
-        
-        return None
+        # Return api_key directly from provider config
+        return provider.get("api_key")
     
     def get_base_url(self, provider_name: str) -> Optional[str]:
         """Get base URL for a provider."""

@@ -126,7 +126,7 @@ class PermissionManager:
         
         # Shell commands require asking by default
         self._rules.append(PermissionRule(
-            tool="shell",
+            tool="bash",
             level=PermissionLevel.ASK,
         ))
     

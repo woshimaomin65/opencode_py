@@ -29,6 +29,7 @@ from ..tool import (
     ToolResult,
     ToolStatus,
     ToolDefinition,
+    ToolContext,
 )
 from typing import TYPE_CHECKING
 
@@ -225,8 +226,16 @@ class Agent:
                     if self.on_tool_call:
                         self.on_tool_call(tool_call.name, tool_call.arguments)
                     
-                    result = ToolRegistry.execute(
+                    # Create tool context
+                    ctx = ToolContext(
+                        session_id=self.session.id,
+                        message_id=tool_call.id,
+                        agent=self.config.name,
+                    )
+                    
+                    result = await ToolRegistry.execute(
                         tool_call.name,
+                        ctx,
                         **tool_call.arguments,
                     )
                     
@@ -339,8 +348,16 @@ class Agent:
                     if self.on_tool_call:
                         self.on_tool_call(tool_call.name, tool_call.arguments)
                     
-                    result = ToolRegistry.execute(
+                    # Create tool context
+                    ctx = ToolContext(
+                        session_id=self.session.id,
+                        message_id=tool_call.id,
+                        agent=self.config.name,
+                    )
+                    
+                    result = await ToolRegistry.execute(
                         tool_call.name,
+                        ctx,
                         **tool_call.arguments,
                     )
                     

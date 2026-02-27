@@ -106,7 +106,7 @@ def run(ctx, prompt, model, provider, session, system_prompt, no_stream):
         model=model,
         provider=provider,
         system_prompt=sys_prompt,
-        tools=["read", "write", "edit", "shell", "search"],
+        tools=["read", "write", "edit", "bash", "search"],
         working_dir=project_path,
     )
     
@@ -175,7 +175,7 @@ def interactive(ctx, model, provider, session):
         model=model,
         provider=provider,
         system_prompt=config.custom_instructions,
-        tools=["read", "write", "edit", "shell", "search"],
+        tools=["read", "write", "edit", "bash", "search"],
         working_dir=project_path,
     )
     

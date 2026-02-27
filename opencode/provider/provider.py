@@ -158,6 +158,24 @@ class BaseProvider(ABC):
 class AnthropicProvider(BaseProvider):
     """Anthropic Claude provider."""
     
+    def __init__(
+        self,
+        model: Optional[str] = None,
+        api_key: Optional[str] = None,
+        base_url: Optional[str] = None,
+        options: Optional[dict] = None,
+        provider_name: str = "anthropic",
+    ):
+        super().__init__(model, api_key, base_url, options, provider_name)
+        self._client = None
+    
+    def _get_client(self):
+        """Get or create Anthropic client."""
+        if self._client is None:
+            from anthropic import AsyncAnthropic
+            self._client = AsyncAnthropic(api_key=self.api_key, base_url=self.base_url)
+        return self._client
+    
     def _get_default_api_key(self) -> Optional[str]:
         return os.environ.get("ANTHROPIC_API_KEY")
     
@@ -165,46 +183,52 @@ class AnthropicProvider(BaseProvider):
         self,
         messages: list[Message],
         tools: Optional[list[dict]] = None,
+        tool_choice: Optional[dict] = None,
         **kwargs,
     ) -> Response:
         """Complete using Anthropic API."""
         try:
-            from anthropic import AsyncAnthropic
-            
-            client = AsyncAnthropic(api_key=self.api_key, base_url=self.base_url)
+            from anthropic import NOT_GIVEN
+            client = self._get_client()
             
             # Convert messages to Anthropic format
             system_message = None
             anthropic_messages = []
             
             for msg in messages:
-                if msg.role == "system":
-                    system_message = msg.content
+                # Handle both dict and Message object
+                role = msg.get("role", msg.role) if hasattr(msg, "role") else msg["role"]
+                content = msg.get("content", msg.content) if hasattr(msg, "content") else msg["content"]
+                
+                if role == "system":
+                    system_message = content
                 else:
                     anthropic_messages.append({
-                        "role": msg.role,
-                        "content": msg.content,
+                        "role": role,
+                        "content": content,
                     })
             
-            # Build request
-            request = {
-                "model": self.model,
-                "max_tokens": kwargs.get("max_tokens", 4096),
-                "messages": anthropic_messages,
-            }
-            
-            if system_message:
-                request["system"] = system_message
-            
+            # Convert tools
+            anthropic_tools = NOT_GIVEN
             if tools:
-                request["tools"] = tools
+                anthropic_tools = [t.to_dict() if hasattr(t, "to_dict") else t for t in tools]
             
-            # Add optional parameters
-            for key in ["temperature", "top_p", "top_k"]:
-                if key in kwargs:
-                    request[key] = kwargs[key]
-            
-            response = await client.messages.create(**request)
+            # Convert tool_choice
+            anthropic_tool_choice = NOT_GIVEN
+            if tool_choice:
+                anthropic_tool_choice = tool_choice
+            client.auth_token = client.api_key
+            response = await client.messages.create(
+                model="qwen3.5-plus",
+                messages=anthropic_messages,
+                max_tokens=kwargs.get("max_tokens", 4096),
+                system=system_message if system_message else NOT_GIVEN,
+                tools=anthropic_tools,
+                tool_choice=anthropic_tool_choice,
+                temperature=kwargs.get("temperature", NOT_GIVEN),
+                top_p=kwargs.get("top_p", NOT_GIVEN),
+                top_k=kwargs.get("top_k", NOT_GIVEN),
+            )
             
             # Parse response
             content = ""
@@ -237,13 +261,13 @@ class AnthropicProvider(BaseProvider):
         self,
         messages: list[Message],
         tools: Optional[list[dict]] = None,
+        tool_choice: Optional[dict] = None,
         **kwargs,
     ) -> AsyncIterator[str]:
         """Stream using Anthropic API."""
         try:
-            from anthropic import AsyncAnthropic
-            
-            client = AsyncAnthropic(api_key=self.api_key, base_url=self.base_url)
+            from anthropic import NOT_GIVEN
+            client = self._get_client()
             
             # Convert messages
             system_message = None
@@ -258,21 +282,28 @@ class AnthropicProvider(BaseProvider):
                         "content": msg.content,
                     })
             
-            # Build request
-            request = {
-                "model": self.model,
-                "max_tokens": kwargs.get("max_tokens", 4096),
-                "messages": anthropic_messages,
-            }
-            
-            if system_message:
-                request["system"] = system_message
-            
+            # Convert tools
+            anthropic_tools = NOT_GIVEN
             if tools:
-                request["tools"] = tools
+                anthropic_tools = [t.to_dict() if hasattr(t, "to_dict") else t for t in tools]
+            
+            # Convert tool_choice
+            anthropic_tool_choice = NOT_GIVEN
+            if tool_choice:
+                anthropic_tool_choice = tool_choice
             
             # Stream
-            async with client.messages.stream(**request) as stream:
+            async with client.messages.stream(
+                model=self.model,
+                messages=anthropic_messages,
+                max_tokens=kwargs.get("max_tokens", 4096),
+                system=system_message if system_message else NOT_GIVEN,
+                tools=anthropic_tools,
+                tool_choice=anthropic_tool_choice,
+                temperature=kwargs.get("temperature", NOT_GIVEN),
+                top_p=kwargs.get("top_p", NOT_GIVEN),
+                top_k=kwargs.get("top_k", NOT_GIVEN),
+            ) as stream:
                 async for text in stream.text_stream:
                     yield text
                     
@@ -313,7 +344,9 @@ class OpenAIProvider(BaseProvider):
             }
             
             if tools:
-                request["tools"] = [{"type": "function", "function": t} for t in tools]
+                # Convert ToolDefinition objects to dicts if needed
+                tools_dict = [{"type": "function", "function": t.to_dict() if hasattr(t, "to_dict") else t} for t in tools]
+                request["tools"] = tools_dict
                 request["tool_choice"] = "auto"
             
             # Add optional parameters
@@ -377,7 +410,8 @@ class OpenAIProvider(BaseProvider):
             }
             
             if tools:
-                request["tools"] = [{"type": "function", "function": t} for t in tools]
+                # Convert ToolDefinition objects to dicts if needed
+                request["tools"] = [{"type": "function", "function": t.to_dict() if hasattr(t, "to_dict") else t} for t in tools]
             
             # Stream
             stream = await client.chat.completions.create(**request)
